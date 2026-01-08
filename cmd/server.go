@@ -13,7 +13,13 @@ func Serve() {
 
 	// create a middleware manager
 	manager := middleware.NewManager()
-	manager.Use(middleware.Tester, middleware.Logger, middleware.CorswithPreflight)
+
+	// intiate a global mux/handler wrapped with corswithpreflight middleware
+	wrappedMux := manager.WrapMuxWith(
+		mux,
+		middleware.Tester,
+		middleware.Logger,
+		middleware.CorswithPreflight)
 
 	// initialize all routes
 	initRoutes(mux, manager)
@@ -21,7 +27,7 @@ func Serve() {
 	// start the server
 	fmt.Println("Server running on port:3000")
 
-	err := http.ListenAndServe(":3000", mux)
+	err := http.ListenAndServe(":3000", wrappedMux)
 	if err != nil {
 		fmt.Println("Error starting the server:", err)
 	}

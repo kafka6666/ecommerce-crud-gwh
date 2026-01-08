@@ -9,7 +9,7 @@ import (
 
 func initRoutes(mux *http.ServeMux, manager *middleware.Manager) {
 	// register all routes
-	mux.Handle("GET /products", manager.With(http.HandlerFunc(handlers.GetProducts), middleware.ExtraLogger))
+	mux.Handle("GET /products", manager.With(http.HandlerFunc(handlers.GetProducts), middleware.ReceiverLogger))
 
 	mux.Handle("POST /products", manager.With(http.HandlerFunc(handlers.CreateProduct)))
 

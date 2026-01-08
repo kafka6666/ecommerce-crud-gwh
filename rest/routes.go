@@ -1,15 +1,15 @@
-package cmd
+package rest
 
 import (
 	"net/http"
 
-	"github.com/kafka6666/ecommerce-crud-gwh/handlers"
-	"github.com/kafka6666/ecommerce-crud-gwh/middleware"
+	"github.com/kafka6666/ecommerce-crud-gwh/rest/handlers"
+	"github.com/kafka6666/ecommerce-crud-gwh/rest/middlewares"
 )
 
-func initRoutes(mux *http.ServeMux, manager *middleware.Manager) {
+func initRoutes(mux *http.ServeMux, manager *middlewares.Manager) {
 	// register all routes
-	mux.Handle("GET /products", manager.With(http.HandlerFunc(handlers.GetProducts), middleware.ReceiverLogger))
+	mux.Handle("GET /products", manager.With(http.HandlerFunc(handlers.GetProducts), middlewares.ReceiverLogger))
 
 	mux.Handle("POST /products", manager.With(http.HandlerFunc(handlers.CreateProduct)))
 

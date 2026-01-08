@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-func SendData(w http.ResponseWriter, statusCode int, data any) {
+func SendError(w http.ResponseWriter, statusCode int, msg string) {
 	w.WriteHeader(statusCode)
 	encoder := json.NewEncoder(w)
-	encoder.Encode(data)
+	encoder.Encode(msg)
 }

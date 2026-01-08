@@ -1,5 +1,9 @@
 package database
 
+import (
+	"fmt"
+)
+
 type Product struct {
 	ID          int     `json:"id"`
 	Title       string  `json:"title"`
@@ -8,7 +12,59 @@ type Product struct {
 	ImgUrl      string  `json:"img_url"`
 }
 
-var ProductList []*Product
+var productList []*Product
+
+func Store(p *Product) *Product {
+	productList = append(productList, p)
+	return p
+}
+
+func List() []*Product {
+	if len(productList) == 0 {
+		return nil
+	}
+	return productList
+}
+
+func GetByID(productId int) *Product {
+	for _, product := range productList {
+		if product.ID == productId {
+			return product
+		}
+	}
+
+	return nil
+}
+
+func Update(p *Product) *Product {
+	for idx, product := range productList {
+		if product.ID == p.ID {
+			productList[idx] = p
+			return p
+		}
+	}
+	return nil
+}
+
+func Delete(productId int) error {
+	var tempList []*Product
+	found := false
+
+	for _, product := range productList {
+		if product.ID == productId {
+			found = true
+			continue // skip this product (delete)
+		}
+		tempList = append(tempList, product)
+	}
+
+	if !found {
+		return fmt.Errorf("product not found")
+	}
+
+	productList = tempList
+	return nil
+}
 
 func init() {
 	prd1 := &Product{
@@ -64,15 +120,15 @@ func init() {
 		Title:       "Grapes",
 		Description: "Fresh grapes, seedless and juicy",
 		Price:       140.0,
-		ImgUrl:      "https://www.allrecipes.com/recipe/214947/perfect-summer-fruit-salad/", // Fruit salad with grapes :contentReference[oaicite:8]{index=8}
+		ImgUrl:      "https://www.allrecipes.com/recipe/214947/perfect-summer-fruit-salad/",
 	}
 
-	ProductList = append(ProductList, prd1)
-	ProductList = append(ProductList, prd2)
-	ProductList = append(ProductList, prd3)
-	ProductList = append(ProductList, prd4)
-	ProductList = append(ProductList, prd5)
-	ProductList = append(ProductList, prd6)
-	ProductList = append(ProductList, prd7)
+	productList = append(productList, prd1)
+	productList = append(productList, prd2)
+	productList = append(productList, prd3)
+	productList = append(productList, prd4)
+	productList = append(productList, prd5)
+	productList = append(productList, prd6)
+	productList = append(productList, prd7)
 
 }

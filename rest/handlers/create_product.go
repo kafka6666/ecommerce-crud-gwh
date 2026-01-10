@@ -18,7 +18,7 @@ type ReqProduct struct {
 func CreateProduct(w http.ResponseWriter, r *http.Request) {
 	var reqProduct *ReqProduct = &ReqProduct{}
 	if err := json.NewDecoder(r.Body).Decode(reqProduct); err != nil {
-		http.Error(w, "Please provide a valid JSON request body", http.StatusBadRequest)
+		utils.SendError(w, http.StatusBadRequest, "Please provide a valid JSON request body")
 		return
 	}
 

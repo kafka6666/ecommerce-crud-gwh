@@ -7,11 +7,10 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/kafka6666/ecommerce-crud-gwh/config"
 	"github.com/kafka6666/ecommerce-crud-gwh/utils"
 )
 
-func AuthenticateJWT(next http.Handler) http.Handler {
+func (m *Middleware) AuthenticateJWT(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// parse jwt to get header and payload
 		header := r.Header.Get("Authorization")
@@ -41,10 +40,9 @@ func AuthenticateJWT(next http.Handler) http.Handler {
 
 		// decode jwt token
 		message := jwtHeader + "." + jwtPayload
-		cnf := config.GetConfig()
 
 		byteArrMessage := []byte(message)
-		byteArrSignature := []byte(cnf.JwtSecretKey)
+		byteArrSignature := []byte(m.cnf.JwtSecretKey)
 
 		h := hmac.New(sha256.New, byteArrSignature)
 		h.Write(byteArrMessage)

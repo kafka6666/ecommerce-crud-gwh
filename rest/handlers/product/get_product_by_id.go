@@ -1,4 +1,4 @@
-package handlers
+package product
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 	"github.com/kafka6666/ecommerce-crud-gwh/utils"
 )
 
-func GetProductByID(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetProductByID(w http.ResponseWriter, r *http.Request) {
 	productId := r.PathValue("id")
 
 	id, err := strconv.Atoi(productId)

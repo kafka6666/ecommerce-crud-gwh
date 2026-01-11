@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func ReceiverLogger(next http.Handler) http.Handler {
+func (m *Middleware) ReceiverLogger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Example extra logging functionality
 		log.Println("Receiver Logger Middleware: Received request for", r.URL.Path)

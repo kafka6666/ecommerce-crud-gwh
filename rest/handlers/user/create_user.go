@@ -1,11 +1,10 @@
-package handlers
+package user
 
 import (
 	"encoding/json"
 	"net/http"
 
 	"github.com/kafka6666/ecommerce-crud-gwh/database"
-	// user "github.com/kafka6666/ecommerce-crud-gwh/database"
 	"github.com/kafka6666/ecommerce-crud-gwh/utils"
 )
 
@@ -17,7 +16,7 @@ type ReqUser struct {
 	IsShopOwner bool   `json:"is_shop_owner"`
 }
 
-func CreateUser(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var reqCreateUser *ReqUser = &ReqUser{}
 	if err := json.NewDecoder(r.Body).Decode(reqCreateUser); err != nil {
 		utils.SendError(w, http.StatusBadRequest, "Please provide a valid JSON request body")

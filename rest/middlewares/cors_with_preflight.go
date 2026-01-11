@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func CorswithPreflight(next http.Handler) http.Handler {
+func (m *Middleware) CorswithPreflight(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// handle CORS headers
 		w.Header().Set("Access-Control-Allow-Origin", "*")

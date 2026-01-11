@@ -1,4 +1,4 @@
-package handlers
+package product
 
 import (
 	"encoding/json"
@@ -15,7 +15,7 @@ type ReqProduct struct {
 	ImgUrl      string  `json:"img_url"`
 }
 
-func CreateProduct(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	var reqProduct *ReqProduct = &ReqProduct{}
 	if err := json.NewDecoder(r.Body).Decode(reqProduct); err != nil {
 		utils.SendError(w, http.StatusBadRequest, "Please provide a valid JSON request body")

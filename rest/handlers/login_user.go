@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/kafka6666/ecommerce-crud-gwh/config"
 	"github.com/kafka6666/ecommerce-crud-gwh/database"
 	"github.com/kafka6666/ecommerce-crud-gwh/utils"
 )
@@ -31,6 +32,23 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.SendData(w, http.StatusOK, foundUser)
+	// create a jwt and send it
+	cnf := config.GetConfig()
+
+	accessToken, err := utils.CreateJwt(cnf.JwtSecretKey, utils.Payload{
+		Sub:         foundUser.ID,
+		FirstName:   foundUser.FirstName,
+		LastName:    foundUser.LastName,
+		Email:       foundUser.Email,
+		IsShopOwner: foundUser.IsShopOwner,
+	})
+	if err != nil {
+		utils.SendError(w, http.StatusInternalServerError, "Access token can not be obtained")
+		return
+	}
+
+	bearerToken := "Bearer " + accessToken
+
+	utils.SendData(w, http.StatusOK, bearerToken)
 
 }

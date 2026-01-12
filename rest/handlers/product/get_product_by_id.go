@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/kafka6666/ecommerce-crud-gwh/database"
 	"github.com/kafka6666/ecommerce-crud-gwh/utils"
 )
 
@@ -17,8 +16,8 @@ func (h *Handler) GetProductByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	product := database.GetByID(id)
-	if product == nil {
+	product, err := h.productRepo.GetByID(id)
+	if err != nil {
 		utils.SendError(w, http.StatusBadRequest, "Product doesn't exist by the ID provided.")
 		return
 	}

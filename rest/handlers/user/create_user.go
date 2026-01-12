@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/kafka6666/ecommerce-crud-gwh/database"
+	"github.com/kafka6666/ecommerce-crud-gwh/repo"
 	"github.com/kafka6666/ecommerce-crud-gwh/utils"
 )
 
@@ -23,7 +23,7 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := &database.User{
+	user := &repo.User{
 		FirstName:   reqCreateUser.FirstName,
 		LastName:    reqCreateUser.LastName,
 		Email:       reqCreateUser.Email,
@@ -31,9 +31,11 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		IsShopOwner: reqCreateUser.IsShopOwner,
 	}
 
-	user.ID = len(user.List()) + 1
-
-	savedUser := user.Store()
+	savedUser, err := h.userRepo.Create(user)
+	if err != nil {
+		utils.SendError(w, http.StatusInternalServerError, "User not created")
+		return
+	}
 
 	utils.SendData(w, http.StatusCreated, savedUser)
 }

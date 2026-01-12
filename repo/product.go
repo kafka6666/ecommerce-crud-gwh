@@ -1,8 +1,6 @@
-package database
+package repo
 
-import (
-	"fmt"
-)
+import "fmt"
 
 type Product struct {
 	ID          int     `json:"id"`
@@ -12,45 +10,62 @@ type Product struct {
 	ImgUrl      string  `json:"img_url"`
 }
 
-var productList []*Product
-
-func Store(p *Product) *Product {
-	productList = append(productList, p)
-	return p
+type ProductRepo interface {
+	Create(p *Product) (*Product, error)
+	ListAll() ([]*Product, error)
+	GetByID(productId int) (*Product, error)
+	Update(p *Product) (*Product, error)
+	Delete(productId int) error
 }
 
-func List() []*Product {
-	if len(productList) == 0 {
-		return nil
+type productRepo struct {
+	productList []*Product
+}
+
+func NewProductRepo() ProductRepo {
+	repo := &productRepo{}
+	generateInitialProducts(repo)
+	return repo
+}
+
+func (r *productRepo) Create(p *Product) (*Product, error) {
+	p.ID = len(r.productList) + 1
+	r.productList = append(r.productList, p)
+	return p, nil
+}
+
+func (r *productRepo) ListAll() ([]*Product, error) {
+	if len(r.productList) == 0 {
+		return nil, nil
 	}
-	return productList
+	return r.productList, nil
 }
 
-func GetByID(productId int) *Product {
-	for _, product := range productList {
+func (r *productRepo) GetByID(productId int) (*Product, error) {
+	for _, product := range r.productList {
 		if product.ID == productId {
-			return product
+			return product, nil
 		}
 	}
 
-	return nil
+	return nil, nil
 }
 
-func Update(p *Product) *Product {
-	for idx, product := range productList {
+func (r *productRepo) Update(p *Product) (*Product, error) {
+	for idx, product := range r.productList {
 		if product.ID == p.ID {
-			productList[idx] = p
-			return p
+			r.productList[idx] = p
+			return p, nil
 		}
 	}
-	return nil
+	return nil, nil
 }
 
-func Delete(productId int) error {
+func (r *productRepo) Delete(productId int) error {
 	var tempList []*Product
 	found := false
 
-	for _, product := range productList {
+	for _, product := range r.productList {
 		if product.ID == productId {
 			found = true
 			continue // skip this product (delete)
@@ -62,11 +77,11 @@ func Delete(productId int) error {
 		return fmt.Errorf("product not found")
 	}
 
-	productList = tempList
+	r.productList = tempList
 	return nil
 }
 
-func init() {
+func generateInitialProducts(r *productRepo) {
 	prd1 := &Product{
 		ID:          1,
 		Title:       "Orange",
@@ -123,12 +138,12 @@ func init() {
 		ImgUrl:      "https://www.allrecipes.com/recipe/214947/perfect-summer-fruit-salad/",
 	}
 
-	productList = append(productList, prd1)
-	productList = append(productList, prd2)
-	productList = append(productList, prd3)
-	productList = append(productList, prd4)
-	productList = append(productList, prd5)
-	productList = append(productList, prd6)
-	productList = append(productList, prd7)
+	r.productList = append(r.productList, prd1)
+	r.productList = append(r.productList, prd2)
+	r.productList = append(r.productList, prd3)
+	r.productList = append(r.productList, prd4)
+	r.productList = append(r.productList, prd5)
+	r.productList = append(r.productList, prd6)
+	r.productList = append(r.productList, prd7)
 
 }

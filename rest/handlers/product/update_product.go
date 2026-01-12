@@ -2,10 +2,11 @@ package product
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
-	"github.com/kafka6666/ecommerce-crud-gwh/database"
+	"github.com/kafka6666/ecommerce-crud-gwh/repo"
 	"github.com/kafka6666/ecommerce-crud-gwh/utils"
 )
 
@@ -31,7 +32,7 @@ func (h *Handler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	updatedProduct := &database.Product{
+	updatedProduct := &repo.Product{
 		ID:          id,
 		Title:       reqProduct.Title,
 		Description: reqProduct.Description,
@@ -39,11 +40,13 @@ func (h *Handler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		ImgUrl:      reqProduct.ImgUrl,
 	}
 
-	savedProduct := database.Update(updatedProduct)
-	if savedProduct == nil {
+	savedProduct, err := h.productRepo.Update(updatedProduct)
+	if err != nil {
 		utils.SendError(w, http.StatusNotFound, "Product can not be saved")
 		return
 	}
 
-	utils.SendData(w, http.StatusCreated, "Product updated successfully")
+	log.Println(savedProduct)
+
+	utils.SendData(w, http.StatusOK, "Succesfully updated the product")
 }

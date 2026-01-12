@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/kafka6666/ecommerce-crud-gwh/database"
+	"github.com/kafka6666/ecommerce-crud-gwh/repo"
 	"github.com/kafka6666/ecommerce-crud-gwh/utils"
 )
 
@@ -22,15 +22,18 @@ func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newProduct := &database.Product{
-		ID:          len(database.List()) + 1,
+	newProduct := &repo.Product{
 		Title:       reqProduct.Title,
 		Description: reqProduct.Description,
 		Price:       reqProduct.Price,
 		ImgUrl:      reqProduct.ImgUrl,
 	}
 
-	savedProduct := database.Store(newProduct)
+	savedProduct, err := h.productRepo.Create(newProduct)
+	if err != nil {
+		utils.SendError(w, http.StatusBadRequest, "Product can not be created.")
+		return
+	}
 
 	utils.SendData(w, http.StatusCreated, savedProduct)
 }

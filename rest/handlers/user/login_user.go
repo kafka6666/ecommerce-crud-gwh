@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/kafka6666/ecommerce-crud-gwh/config"
-	"github.com/kafka6666/ecommerce-crud-gwh/database"
 	"github.com/kafka6666/ecommerce-crud-gwh/utils"
 )
 
@@ -26,9 +25,14 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	foundUser := database.Find(reqLoginUser.Email, reqLoginUser.Password)
-	if foundUser == nil {
+	foundUser, err := h.userRepo.Find(reqLoginUser.Email, reqLoginUser.Password)
+	if err != nil {
 		utils.SendError(w, http.StatusBadRequest, "Invalid credentials")
+		return
+	}
+
+	if foundUser == nil {
+		utils.SendError(w, http.StatusBadRequest, "User not found")
 		return
 	}
 
